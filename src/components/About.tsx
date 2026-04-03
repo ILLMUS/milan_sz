@@ -24,7 +24,7 @@ const About = () => (
             Your Trusted Supply Partner
           </h2>
           <p className="mx-auto mt-6 max-w-2xl font-body text-lg font-light leading-relaxed text-primary-foreground/70">
-            Milan_sz is a professional accommodation amenities supplier dedicated to equipping hospitality businesses
+            Milan_Trading is a professional accommodation amenities supplier dedicated to equipping hospitality businesses
             across Eswatini with premium products at scale.
           </p>
         </motion.div>

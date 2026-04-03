@@ -1,8 +1,12 @@
 import { motion } from "framer-motion";
 import { MessageCircle } from "lucide-react";
-import productAmenities from "@/assets/product-amenities.jpg";
-import productRoomSpray from "@/assets/product-room-spray.jpg";
-import productBodyWash from "@/assets/product-body-wash.jpg";
+
+// ✅ EXACT file names from your assets folder
+import productShowerCap from "@/assets/showercap.png";
+import productLotion from "@/assets/lotion.png";
+import productShampooConditioner from "@/assets/shampooconditioner.png";
+import productShowerGel from "@/assets/shower-gel.png";
+import productSoap from "@/assets/soap.png";
 
 const trackEvent = (action: string) => {
   if (typeof window !== "undefined" && (window as any).gtag) {
@@ -12,22 +16,44 @@ const trackEvent = (action: string) => {
 
 const products = [
   {
-    title: "Accommodation Amenities",
-    description: "Complete amenity kits including soap, shampoo, conditioner and lotion — designed for guest satisfaction and repeat bookings.",
-    image: productAmenities,
-    whatsappMsg: "Hi Milan_sz, I'd like to request a bulk quote for Accommodation Amenities. Please send details.",
+    title: "Shower Cap",
+    description:
+      "Individually packaged shower caps designed for hygiene and convenience — ideal for hotels and guest accommodations.",
+    image: productShowerCap,
+    whatsappMsg:
+      "Hi Milan_trading, I'd like to request a bulk quote for Shower Caps. Please send details.",
   },
   {
-    title: "Room Sprays",
-    description: "Premium room fragrances that elevate guest experience — long-lasting, elegant scents crafted for hospitality environments.",
-    image: productRoomSpray,
-    whatsappMsg: "Hi Milan_sz, I'd like to request a bulk quote for Room Sprays. Please send details.",
+    title: "Hand & Body Lotion",
+    description:
+      "Hydrating lotion formulated to keep skin soft and moisturized — suitable for all skin types.",
+    image: productLotion,
+    whatsappMsg:
+      "Hi Milan_trading, I'd like to request a bulk quote for Lotion. Please send details.",
   },
   {
-    title: "Body Wash",
-    description: "Luxurious body wash formulated for sensitive skin — bulk packaged for easy restocking and cost efficiency.",
-    image: productBodyWash,
-    whatsappMsg: "Hi Milan_sz, I'd like to request a bulk quote for Body Wash. Please send details.",
+    title: "Shampoo & Conditioner",
+    description:
+      "Nourishing 2-in-1 formula that cleans and conditions hair — perfect for guest comfort and efficiency.",
+    image: productShampooConditioner,
+    whatsappMsg:
+      "Hi Milan_trading, I'd like to request a bulk quote for Shampoo & Conditioner. Please send details.",
+  },
+  {
+    title: "Shower Gel",
+    description:
+      "Refreshing shower gel designed for daily use — gentle on skin and ideal for hospitality environments.",
+    image: productShowerGel,
+    whatsappMsg:
+      "Hi Milan_trading, I'd like to request a bulk quote for Shower Gel. Please send details.",
+  },
+  {
+    title: "Soap",
+    description:
+      "High-quality cleansing soap with a smooth finish — ideal for hotels, lodges, and guest houses.",
+    image: productSoap,
+    whatsappMsg:
+      "Hi Milan_trading, I'd like to request a bulk quote for Soap. Please send details.",
   },
 ];
 
@@ -40,16 +66,21 @@ const Products = () => (
         viewport={{ once: true }}
         className="mb-16 text-center"
       >
-        <span className="font-body text-xs font-light tracking-[0.3em] uppercase text-gold">Our Products</span>
+        <span className="font-body text-xs font-light tracking-[0.3em] uppercase text-gold">
+          Our Products
+        </span>
+
         <h2 className="mt-3 font-heading text-3xl font-bold text-foreground md:text-5xl">
           Premium Hospitality Supplies
         </h2>
+
         <p className="mx-auto mt-4 max-w-xl font-body text-muted-foreground">
           Quality products designed for the accommodation industry — available in bulk with competitive pricing.
         </p>
       </motion.div>
 
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+      {/* ✅ Responsive grid for 5 products */}
+      <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {products.map((product, i) => (
           <motion.div
             key={product.title}
@@ -67,9 +98,16 @@ const Products = () => (
                 loading="lazy"
               />
             </div>
+
             <div className="p-6">
-              <h3 className="font-heading text-xl font-semibold text-foreground">{product.title}</h3>
-              <p className="mt-2 font-body text-sm leading-relaxed text-muted-foreground">{product.description}</p>
+              <h3 className="font-heading text-xl font-semibold text-foreground">
+                {product.title}
+              </h3>
+
+              <p className="mt-2 font-body text-sm leading-relaxed text-muted-foreground">
+                {product.description}
+              </p>
+
               <div className="mt-6 flex flex-col gap-3">
                 <a
                   href="#contact"
@@ -78,8 +116,11 @@ const Products = () => (
                 >
                   Request Bulk Quote
                 </a>
+
                 <a
-                  href={`https://wa.me/26800000000?text=${encodeURIComponent(product.whatsappMsg)}`}
+                  href={`https://wa.me/26876259378?text=${encodeURIComponent(
+                    product.whatsappMsg
+                  )}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => trackEvent("whatsapp_product_click")}
