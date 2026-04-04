@@ -92,7 +92,7 @@ ${data.message || "-"}
     const encodedMessage = encodeURIComponent(message);
 
     // 👉 YOUR WHATSAPP NUMBER (FIX THIS)
-    const whatsappNumber = "26876427025";
+    const whatsappNumber = "26876259378";
 
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
 

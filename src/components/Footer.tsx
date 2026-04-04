@@ -52,7 +52,7 @@ const Footer = () => (
 
       <div className="mt-12 border-t border-primary-foreground/10 pt-8 text-center">
         <p className="font-body text-xs text-primary-foreground/30">
-          © {new Date().getFullYear()} Milan_trading. All rights reserved. Built by RST Sealed Eswatini.
+          © {new Date().getFullYear()} Milan_sz. All rights reserved. Built by RST Sealed.
         </p>
       </div>
     </div>
