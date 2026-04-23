@@ -12,7 +12,7 @@ import Footer from "@/components/Footer";
 
 const Index = () => {
   const siteUrl = "https://www.milanszsupplies.com";
-  const ogImage = `${siteUrl}/og-cover.jpg`;
+  const ogImage = `${siteUrl}/og-cover.png`;
   const logoImage = `${siteUrl}/logo.png`;
 
   return (
