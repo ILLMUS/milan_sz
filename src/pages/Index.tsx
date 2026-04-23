@@ -52,8 +52,8 @@ const Index = () => {
             Facebook / WhatsApp / LinkedIn
         ========================= */}
         <meta property="og:type" content="website" />
-        <meta property="og:url" content={siteUrl} />
-        <meta property="og:site_name" content="Milan_sz" />
+        <meta property="og:url" content="https://www.milanszsupplies.com/" />
+        <meta property="og:site_name" content="Milan_sz Supplies" />
 
         <meta
           property="og:title"
@@ -68,9 +68,7 @@ const Index = () => {
         <meta property="og:image" content={ogImage} />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta
-          property="og:image:alt"
-          content="Milan_sz premium hotel amenities supplies"
+        <meta property="og:image:type"  content="https://www.milanszsupplies.com/og-cover.png"
         />
 
         {/* =========================
@@ -88,7 +86,7 @@ const Index = () => {
           content="Bulk hospitality supplies for hotels, lodges, guesthouses and Airbnbs in Eswatini."
         />
 
-        <meta name="twitter:image" content={ogImage} />
+        <meta name="twitter:image" content="https://www.milanszsupplies.com/og-cover.png" />
 
         {/* =========================
             LOCAL SEO
