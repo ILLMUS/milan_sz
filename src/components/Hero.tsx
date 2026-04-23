@@ -31,8 +31,8 @@ const Hero = () => {
           </div>
 
           <h1 className="mx-auto max-w-4xl font-heading text-4xl font-bold leading-tight text-primary-foreground md:text-6xl lg:text-7xl">
-            Premium Accommodation Amenities for{" "}
-            <span className="text-gradient-gold">Guesthouses & Airbnbs</span> in Eswatini
+           Hotel, Guesthouse & Airbnb {" "}
+            <span className="text-gradient-gold">Amenities Supplier</span> in Eswatini
           </h1>
 
           <p className="mx-auto mt-6 max-w-2xl font-body text-lg font-light leading-relaxed text-primary-foreground/70 md:text-xl">

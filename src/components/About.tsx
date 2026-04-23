@@ -21,7 +21,7 @@ const About = () => (
         >
           <span className="font-body text-xs font-light tracking-[0.3em] uppercase text-gold">About Us</span>
           <h2 className="mt-3 font-heading text-3xl font-bold text-primary-foreground md:text-5xl">
-            Your Trusted Supply Partner
+            Trusted Hospitality Amenities Supplier in Eswatini
           </h2>
           <p className="mx-auto mt-6 max-w-2xl font-body text-lg font-light leading-relaxed text-primary-foreground/70">
             Milan_sz is a professional accommodation amenities supplier dedicated to equipping hospitality businesses

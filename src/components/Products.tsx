@@ -21,7 +21,7 @@ const products = [
       "Individually packaged shower caps designed for hygiene and convenience — ideal for hotels and guest accommodations.",
     image: productShowerCap,
     whatsappMsg:
-      "Hi Milan_trading, I'd like to request a bulk quote for Shower Caps. Please send details.",
+      "Hi Milan_sz, I'd like to request a bulk quote for Shower Caps. Please send details.",
   },
   {
     title: "Hand & Body Lotion",
@@ -29,7 +29,7 @@ const products = [
       "Hydrating lotion formulated to keep skin soft and moisturized — suitable for all skin types.",
     image: productLotion,
     whatsappMsg:
-      "Hi Milan_trading, I'd like to request a bulk quote for Lotion. Please send details.",
+      "Hi Milan_sz, I'd like to request a bulk quote for Lotion. Please send details.",
   },
   {
     title: "Shampoo & Conditioner",
@@ -37,7 +37,7 @@ const products = [
       "Nourishing 2-in-1 formula that cleans and conditions hair — perfect for guest comfort and efficiency.",
     image: productShampooConditioner,
     whatsappMsg:
-      "Hi Milan_trading, I'd like to request a bulk quote for Shampoo & Conditioner. Please send details.",
+      "Hi Milan_sz, I'd like to request a bulk quote for Shampoo & Conditioner. Please send details.",
   },
   {
     title: "Shower Gel",
@@ -45,7 +45,7 @@ const products = [
       "Refreshing shower gel designed for daily use — gentle on skin and ideal for hospitality environments.",
     image: productShowerGel,
     whatsappMsg:
-      "Hi Milan_trading, I'd like to request a bulk quote for Shower Gel. Please send details.",
+      "Hi Milan_sz, I'd like to request a bulk quote for Shower Gel. Please send details.",
   },
   {
     title: "Soap",
@@ -53,7 +53,7 @@ const products = [
       "High-quality cleansing soap with a smooth finish — ideal for hotels, lodges, and guest houses.",
     image: productSoap,
     whatsappMsg:
-      "Hi Milan_trading, I'd like to request a bulk quote for Soap. Please send details.",
+      "Hi Milan_sz, I'd like to request a bulk quote for Soap. Please send details.",
   },
 ];
 
@@ -71,7 +71,7 @@ const Products = () => (
         </span>
 
         <h2 className="mt-3 font-heading text-3xl font-bold text-foreground md:text-5xl">
-          Premium Hospitality Supplies
+          Bulk Hotel & Guesthouse Amenities
         </h2>
 
         <p className="mx-auto mt-4 max-w-xl font-body text-muted-foreground">
