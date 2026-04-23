@@ -22,18 +22,19 @@ const Index = () => {
             CORE SEO
         ========================= */}
         <html lang="en" />
+
         <title>
-          Milan_sz | Premium Hotel Amenities Supplier in Eswatini
+          Milan SZ Supplies | Premium Hotel Amenities Supplier in Eswatini
         </title>
 
         <meta
           name="description"
-          content="Milan_sz  is a premium supplier of hotel, guesthouse, Airbnb and lodge amenities in Eswatini. Bulk soap, lotion, shampoo, shower caps, shower gel and reliable restocking."
+          content="Milan SZ Supplies is a premium supplier of hotel, guesthouse, Airbnb and lodge amenities in Eswatini. Bulk soap, lotion, shampoo, shower caps, shower gel and reliable restocking."
         />
 
         <meta
           name="keywords"
-          content="Milan_sz, hotel amenities Eswatini, guesthouse supplies Eswatini, Airbnb toiletries supplier, lodge amenities, hotel soap wholesale, shower cap supplier, hospitality products Eswatini"
+          content="Milan SZ Supplies, hotel amenities Eswatini, guesthouse supplies Eswatini, Airbnb toiletries supplier, lodge amenities, hotel soap wholesale, shower cap supplier, hospitality products Eswatini"
         />
 
         <meta
@@ -45,19 +46,20 @@ const Index = () => {
         <meta name="theme-color" content="#050505" />
         <meta name="format-detection" content="telephone=no" />
 
-        <link rel="canonical" href={siteUrl} />
+        <link rel="canonical" href={`${siteUrl}/`} />
 
         {/* =========================
             OPEN GRAPH
             Facebook / WhatsApp / LinkedIn
         ========================= */}
+        <meta property="og:locale" content="en_US" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.milanszsupplies.com/" />
-        <meta property="og:site_name" content="Milan_sz Supplies" />
+        <meta property="og:url" content={`${siteUrl}/`} />
+        <meta property="og:site_name" content="Milan SZ Supplies" />
 
         <meta
           property="og:title"
-          content="Milan_sz | Premium Hotel Amenities Supplier in Eswatini"
+          content="Milan SZ Supplies | Premium Hotel Amenities Supplier in Eswatini"
         />
 
         <meta
@@ -66,9 +68,13 @@ const Index = () => {
         />
 
         <meta property="og:image" content={ogImage} />
+        <meta property="og:image:secure_url" content={ogImage} />
+        <meta property="og:image:type" content="image/png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta property="og:image:type"  content="https://www.milanszsupplies.com/og-cover.png"
+        <meta
+          property="og:image:alt"
+          content="Milan SZ Supplies premium hotel amenities in Eswatini"
         />
 
         {/* =========================
@@ -78,7 +84,7 @@ const Index = () => {
 
         <meta
           name="twitter:title"
-          content="Milan_sz | Hotel Amenities Supplier"
+          content="Milan SZ Supplies | Hotel Amenities Supplier"
         />
 
         <meta
@@ -86,7 +92,7 @@ const Index = () => {
           content="Bulk hospitality supplies for hotels, lodges, guesthouses and Airbnbs in Eswatini."
         />
 
-        <meta name="twitter:image" content="https://www.milanszsupplies.com/og-cover.png" />
+        <meta name="twitter:image" content={ogImage} />
 
         {/* =========================
             LOCAL SEO
@@ -110,7 +116,7 @@ const Index = () => {
             "@type": "LocalBusiness",
             "@id": `${siteUrl}/#business`,
             name: "Milan SZ Supplies",
-            url: siteUrl,
+            url: `${siteUrl}/`,
             image: ogImage,
             logo: logoImage,
             description:
@@ -128,7 +134,7 @@ const Index = () => {
             },
             sameAs: [
               "https://wa.me/26876259378"
-            ],
+            ]
           })}
         </script>
 
@@ -140,9 +146,9 @@ const Index = () => {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "Milan SZ Supplies",
-            url: siteUrl,
+            url: `${siteUrl}/`,
             logo: logoImage,
-            image: ogImage,
+            image: ogImage
           })}
         </script>
 
@@ -158,29 +164,29 @@ const Index = () => {
               {
                 "@type": "Product",
                 position: 1,
-                name: "Shower Cap",
+                name: "Shower Cap"
               },
               {
                 "@type": "Product",
                 position: 2,
-                name: "Soap",
+                name: "Soap"
               },
               {
                 "@type": "Product",
                 position: 3,
-                name: "Hand & Body Lotion",
+                name: "Hand & Body Lotion"
               },
               {
                 "@type": "Product",
                 position: 4,
-                name: "Shampoo & Conditioner",
+                name: "Shampoo & Conditioner"
               },
               {
                 "@type": "Product",
                 position: 5,
-                name: "Shower Gel",
-              },
-            ],
+                name: "Shower Gel"
+              }
+            ]
           })}
         </script>
       </Helmet>
