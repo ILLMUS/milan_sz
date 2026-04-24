@@ -153,42 +153,77 @@ const Index = () => {
         </script>
 
         {/* =========================
-            SCHEMA - PRODUCTS
-        ========================= */}
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "ItemList",
-            name: "Hospitality Amenities",
-            itemListElement: [
-              {
-                "@type": "Product",
-                position: 1,
-                name: "Shower Cap"
-              },
-              {
-                "@type": "Product",
-                position: 2,
-                name: "Soap"
-              },
-              {
-                "@type": "Product",
-                position: 3,
-                name: "Hand & Body Lotion"
-              },
-              {
-                "@type": "Product",
-                position: 4,
-                name: "Shampoo & Conditioner"
-              },
-              {
-                "@type": "Product",
-                position: 5,
-                name: "Shower Gel"
-              }
-            ]
-          })}
-        </script>
+    SCHEMA - PRODUCTS
+========================= */}
+<script type="application/ld+json">
+  {JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: "Hospitality Amenities",
+    itemListElement: [
+      {
+        "@type": "Product",
+        position: 1,
+        name: "Shower Cap",
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "SZL",
+          price: "2.68",
+          availability: "https://schema.org/InStock",
+          url: `${siteUrl}/`
+        }
+      },
+      {
+        "@type": "Product",
+        position: 2,
+        name: "Soap",
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "SZL",
+          price: "2.50",
+          availability: "https://schema.org/InStock",
+          url: `${siteUrl}/`
+        }
+      },
+      {
+        "@type": "Product",
+        position: 3,
+        name: "Hand & Body Lotion",
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "SZL",
+          price: "4.15",
+          availability: "https://schema.org/InStock",
+          url: `${siteUrl}/`
+        }
+      },
+      {
+        "@type": "Product",
+        position: 4,
+        name: "Shampoo & Conditioner",
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "SZL",
+          price: "3.10",
+          availability: "https://schema.org/InStock",
+          url: `${siteUrl}/`
+        }
+      },
+      {
+        "@type": "Product",
+        position: 5,
+        name: "Shower Gel",
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "SZL",
+          price: "3.10",
+          availability: "https://schema.org/InStock",
+          url: `${siteUrl}/`
+        }
+      }
+    ]
+  })}
+</script>
       </Helmet>
 
       <Navbar />
