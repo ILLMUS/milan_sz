@@ -152,77 +152,114 @@ const Index = () => {
           })}
         </script>
 
-        {/* =========================
-    SCHEMA - PRODUCTS
+ {/* =========================
+   SCHEMA - PRODUCTS
 ========================= */}
 <script type="application/ld+json">
-  {JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Hospitality Amenities",
-    itemListElement: [
-      {
-        "@type": "Product",
-        position: 1,
-        name: "Shower Cap",
-        offers: {
-          "@type": "Offer",
-          priceCurrency: "SZL",
-          price: "2.68",
-          availability: "https://schema.org/InStock",
-          url: `${siteUrl}/`
-        }
+{JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  name: "Hospitality Amenities",
+  itemListElement: [
+    {
+      "@type": "Product",
+      position: 1,
+      name: "Shower Cap",
+      image: `${siteUrl}/products/showercap.png`,
+      description: "Disposable premium shower caps for hotels, guesthouses and lodges.",
+      brand: {
+        "@type": "Brand",
+        name: "Milan_sz Supplies"
       },
-      {
-        "@type": "Product",
-        position: 2,
-        name: "Soap",
-        offers: {
-          "@type": "Offer",
-          priceCurrency: "SZL",
-          price: "2.50",
-          availability: "https://schema.org/InStock",
-          url: `${siteUrl}/`
-        }
-      },
-      {
-        "@type": "Product",
-        position: 3,
-        name: "Hand & Body Lotion",
-        offers: {
-          "@type": "Offer",
-          priceCurrency: "SZL",
-          price: "4.15",
-          availability: "https://schema.org/InStock",
-          url: `${siteUrl}/`
-        }
-      },
-      {
-        "@type": "Product",
-        position: 4,
-        name: "Shampoo & Conditioner",
-        offers: {
-          "@type": "Offer",
-          priceCurrency: "SZL",
-          price: "3.10",
-          availability: "https://schema.org/InStock",
-          url: `${siteUrl}/`
-        }
-      },
-      {
-        "@type": "Product",
-        position: 5,
-        name: "Shower Gel",
-        offers: {
-          "@type": "Offer",
-          priceCurrency: "SZL",
-          price: "3.10",
-          availability: "https://schema.org/InStock",
-          url: `${siteUrl}/`
-        }
+      sku: "MSZ-SC-001",
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "SZL",
+        price: "2.68",
+        availability: "https://schema.org/InStock",
+        url: `${siteUrl}/`
+        /* shippingDetails: Add later */
+        /* hasMerchantReturnPolicy: Add later */
       }
-    ]
-  })}
+    },
+    {
+      "@type": "Product",
+      position: 2,
+      name: "Soap",
+      image: `${siteUrl}/products/soap.png`,
+      description: "Premium guest soap bars for hospitality use.",
+      brand: {
+        "@type": "Brand",
+        name: "Milan_sz Supplies"
+      },
+      sku: "MSZ-SP-002",
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "SZL",
+        price: "2.50",
+        availability: "https://schema.org/InStock",
+        url: `${siteUrl}/`
+      }
+    },
+    {
+      "@type": "Product",
+      position: 3,
+      name: "Hand & Body Lotion",
+      image: `${siteUrl}/products/lotion.png`,
+      description: "Luxury lotion amenities for hotels and Airbnbs.",
+      brand: {
+        "@type": "Brand",
+        name: "Milan_sz Supplies"
+      },
+      sku: "MSZ-HBL-003",
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "SZL",
+        price: "4.15",
+        availability: "https://schema.org/InStock",
+        url: `${siteUrl}/`
+      }
+    },
+    {
+      "@type": "Product",
+      position: 4,
+      name: "Shampoo & Conditioner",
+      image: `${siteUrl}/products/shampooconditioner.png`,
+      description: "Premium shampoo and conditioner amenities for guest accommodation.",
+      brand: {
+        "@type": "Brand",
+        name: "Milan_sz Supplies"
+      },
+      sku: "MSZ-SC-004",
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "SZL",
+        price: "3.10",
+        availability: "https://schema.org/InStock",
+        url: `${siteUrl}/`
+      }
+    },
+    {
+      "@type": "Product",
+      position: 5,
+      name: "Shower Gel",
+      image: `${siteUrl}/products/shower-gel.png`,
+      description: "Refreshing shower gel amenities for hotels and lodges.",
+      brand: {
+        "@type": "Brand",
+        name: "Milan_sz Supplies"
+      },
+      sku: "MSZ-SG-005",
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "SZL",
+        price: "3.10",
+        availability: "https://schema.org/InStock",
+        url: `${siteUrl}/`
+      }
+    }
+  ]
+})}
 </script>
       </Helmet>
 
