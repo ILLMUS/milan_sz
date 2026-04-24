@@ -24,17 +24,17 @@ const Index = () => {
         <html lang="en" />
 
         <title>
-          Milan SZ Supplies | Premium Hotel Amenities Supplier in Eswatini
+          Milan_sz Supplies | Premium Hotel Amenities Supplier in Eswatini
         </title>
 
         <meta
           name="description"
-          content="Milan SZ Supplies is a premium supplier of hotel, guesthouse, Airbnb and lodge amenities in Eswatini. Bulk soap, lotion, shampoo, shower caps, shower gel and reliable restocking."
+          content="Milan_sz Supplies is a premium supplier of hotel, guesthouse, Airbnb and lodge amenities in Eswatini. Bulk soap, lotion, shampoo, shower caps, shower gel and reliable restocking."
         />
 
         <meta
           name="keywords"
-          content="Milan SZ Supplies, hotel amenities Eswatini, guesthouse supplies Eswatini, Airbnb toiletries supplier, lodge amenities, hotel soap wholesale, shower cap supplier, hospitality products Eswatini"
+          content="Milan_sz Supplies, hotel amenities Eswatini, guesthouse supplies Eswatini, Airbnb toiletries supplier, lodge amenities, hotel soap wholesale, shower cap supplier, hospitality products Eswatini"
         />
 
         <meta
@@ -42,7 +42,7 @@ const Index = () => {
           content="index, follow, max-image-preview:large"
         />
 
-        <meta name="author" content="Milan SZ Supplies" />
+        <meta name="author" content="Milan_sz Supplies" />
         <meta name="theme-color" content="#050505" />
         <meta name="format-detection" content="telephone=no" />
 
@@ -55,11 +55,11 @@ const Index = () => {
         <meta property="og:locale" content="en_US" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={`${siteUrl}/`} />
-        <meta property="og:site_name" content="Milan SZ Supplies" />
+        <meta property="og:site_name" content="Milan_sz Supplies" />
 
         <meta
           property="og:title"
-          content="Milan SZ Supplies | Premium Hotel Amenities Supplier in Eswatini"
+          content="Milan_sz Supplies | Premium Hotel Amenities Supplier in Eswatini"
         />
 
         <meta
@@ -74,7 +74,7 @@ const Index = () => {
         <meta property="og:image:height" content="630" />
         <meta
           property="og:image:alt"
-          content="Milan SZ Supplies premium hotel amenities in Eswatini"
+          content="Milan_sz Supplies premium hotel amenities in Eswatini"
         />
 
         {/* =========================
@@ -84,7 +84,7 @@ const Index = () => {
 
         <meta
           name="twitter:title"
-          content="Milan SZ Supplies | Hotel Amenities Supplier"
+          content="Milan_sz Supplies | Hotel Amenities Supplier"
         />
 
         <meta
