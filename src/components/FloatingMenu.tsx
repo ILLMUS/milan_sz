@@ -10,7 +10,7 @@ const trackEvent = (action: string) => {
 
 const menuItems = [
   { icon: Phone, label: "Call Us", href: "tel:+26876259378", event: "phone_click" },
-  { icon: Mail, label: "Email Us", href: "mailto:info@milantrading.com", event: "email_click" },
+  { icon: Mail, label: "Email Us", href: "mailto:milantradings@gmail.com", event: "email_click" },
   { icon: MessageCircle, label: "WhatsApp Order", href: "https://wa.me/26876259378?text=Hi%20Milan_sz%2C%20I'd%20like%20to%20place%20an%20order.", event: "whatsapp_click" },
   { icon: Search, label: "Search Product", href: "#products", event: "search_product_click" },
   { icon: FileText, label: "Get Free Quote", href: "#contact", event: "floating_quote_click" },
