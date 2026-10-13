@@ -1,10 +1,10 @@
 import productAmenities from "@/assets/product-amenities.jpg";
 import productRoomSpray from "@/assets/product-room-spray.jpg";
-import productBodyWash from "@/assets/product-body-wash.jpg";
-import productBarSoap from "@/assets/product-bar-soap.jpg";
-import productShowerCap from "@/assets/product-shower-cap.jpg";
-import productShampooConditioner from "@/assets/product-shampoo-conditioner.jpg";
-import productLotion from "@/assets/product-lotion.jpg";
+import productBodyWash from "@/assets/product-body-wash.png";
+import productBarSoap from "@/assets/product-bar-soap.png";
+import productShowerCap from "@/assets/product-shower-cap.png";
+import productShampooConditioner from "@/assets/product-shampoo-conditioner.png";
+import productLotion from "@/assets/product-lotion.png";
 
 export type Product = {
   id: string;
