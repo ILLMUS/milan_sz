@@ -93,18 +93,7 @@ export const products: Product[] = [
     step: 25,
     image: productLotion,
   },
-  {
-    id: "room-spray",
-    title: "Room Sprays",
-    range: "Botanique",
-    description:
-      "Long-lasting hospitality fragrances that carry a signature scent through every room and corridor.",
-    price: 85,
-    unit: "per 100ml",
-    moq: 24,
-    step: 6,
-    image: productRoomSpray,
-  },
+
 ];
 
 export const formatPrice = (value: number) =>

@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Send, Shield } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
+
+// Your WhatsApp number in international format: digits only, no +, spaces or dashes
+const WHATSAPP_NUMBER = "26876259378";
 
 const trackEvent = (action: string) => {
   if (typeof window !== "undefined" && (window as any).gtag) {
@@ -34,21 +37,38 @@ const contactSchema = z.object({
 
 type ContactForm = z.infer<typeof contactSchema>;
 
+const emptyForm: ContactForm = {
+  fullName: "",
+  businessName: "",
+  phone: "",
+  email: "",
+  establishmentType: "",
+  productsInterested: "",
+  estimatedQuantity: "",
+  message: "",
+};
+
+const buildWhatsAppMessage = (data: ContactForm) =>
+  [
+    "*New Quote Request*",
+    "",
+    `*Name:* ${data.fullName}`,
+    `*Business:* ${data.businessName}`,
+    `*Type:* ${data.establishmentType}`,
+    `*Phone:* ${data.phone}`,
+    `*Email:* ${data.email}`,
+    data.productsInterested && `*Products:* ${data.productsInterested}`,
+    data.estimatedQuantity && `*Quantity:* ${data.estimatedQuantity}`,
+    data.message && `*Message:* ${data.message}`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
 const Contact = () => {
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Partial<Record<keyof ContactForm, string>>>({});
   const [honeypot, setHoneypot] = useState("");
-  const [form, setForm] = useState<ContactForm>({
-    fullName: "",
-    businessName: "",
-    phone: "",
-    email: "",
-    establishmentType: "",
-    productsInterested: "",
-    estimatedQuantity: "",
-    message: "",
-  });
+  const [form, setForm] = useState<ContactForm>(emptyForm);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -58,7 +78,7 @@ const Contact = () => {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     // Honeypot check – bots fill hidden fields
@@ -75,61 +95,29 @@ const Contact = () => {
       return;
     }
 
-    setLoading(true);
     setErrors({});
 
-    try {
-      // Submit to edge function (Airtable integration)
-      const { error: fnError } = await supabase.functions.invoke("submit-quote", {
-        body: result.data,
-      });
+    // Open WhatsApp synchronously (before any await) so mobile browsers don't block it
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+      buildWhatsAppMessage(result.data)
+    )}`;
+    window.open(url, "_blank", "noopener,noreferrer");
 
-      if (fnError) {
-        console.error("Edge function error:", fnError);
-        throw new Error("Submission failed");
-      }
+    // Backup: still log the lead to Airtable in the background.
+    // Delete this block if you want WhatsApp only.
+    supabase.functions
+      .invoke("submit-quote", { body: result.data })
+      .then(({ error }) => {
+        if (error) console.error("Backup submission failed:", error);
+      })
+      .catch((err) => console.error("Backup submission failed:", err));
 
-      // Also submit to Netlify Forms (if deployed on Netlify)
-      try {
-        const formData = new URLSearchParams();
-        formData.append("form-name", "quote-request");
-        Object.entries(result.data).forEach(([key, value]) => {
-          formData.append(key, value);
-        });
-        await fetch("/", {
-          method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: formData.toString(),
-        });
-      } catch {
-        // Netlify submission is optional — don't block on failure
-        console.log("Netlify Forms submission skipped (not on Netlify)");
-      }
-
-      trackEvent("form_submission");
-      toast({
-        title: "Quote Request Sent!",
-        description: "We'll get back to you within 24 hours.",
-      });
-      setForm({
-        fullName: "",
-        businessName: "",
-        phone: "",
-        email: "",
-        establishmentType: "",
-        productsInterested: "",
-        estimatedQuantity: "",
-        message: "",
-      });
-    } catch {
-      toast({
-        title: "Something went wrong",
-        description: "Please try again or contact us directly.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+    trackEvent("whatsapp_quote_submission");
+    toast({
+      title: "Opening WhatsApp…",
+      description: "Tap Send in WhatsApp to deliver your quote request.",
+    });
+    setForm(emptyForm);
   };
 
   const inputClass =
@@ -140,24 +128,12 @@ const Contact = () => {
   return (
     <section id="contact" className="bg-background py-20 md:py-28">
       <div className="container mx-auto px-6">
-        {/* Hidden Netlify form for bot detection */}
-        <form name="quote-request" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
-          <input type="text" name="fullName" />
-          <input type="text" name="businessName" />
-          <input type="tel" name="phone" />
-          <input type="email" name="email" />
-          <select name="establishmentType"><option value=""></option></select>
-          <input type="text" name="productsInterested" />
-          <input type="text" name="estimatedQuantity" />
-          <textarea name="message"></textarea>
-        </form>
-
         <motion.form
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           onSubmit={handleSubmit}
-          className="mx-auto max-w-2xl space-y-5"
+          className="relative mx-auto max-w-2xl space-y-5"
           noValidate
         >
           {/* Honeypot field – hidden from real users */}
@@ -217,11 +193,10 @@ const Contact = () => {
 
           <button
             type="submit"
-            disabled={loading}
-            className="gradient-gold flex w-full items-center justify-center gap-2 rounded-sm py-4 font-body text-sm font-semibold uppercase tracking-widest text-accent-foreground transition-all hover:shadow-gold disabled:opacity-50"
+            className="gradient-gold flex w-full items-center justify-center gap-2 rounded-sm py-4 font-body text-sm font-semibold uppercase tracking-widest text-accent-foreground transition-all hover:shadow-gold"
           >
-            <Send size={16} />
-            {loading ? "Sending..." : "Submit Quote Request"}
+            <MessageCircle size={16} />
+            Send via WhatsApp
           </button>
         </motion.form>
       </div>
