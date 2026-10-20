@@ -21,18 +21,7 @@ export type Product = {
 };
 
 export const products: Product[] = [
-  {
-    id: "amenity-kit",
-    title: "Accommodation Amenity Kits",
-    range: "Guest Collection",
-    description:
-      "Complete kits with soap, shampoo, conditioner and lotion — presentation-ready for guest bathrooms.",
-    price: 42,
-    unit: "per kit",
-    moq: 50,
-    step: 10,
-    image: productAmenities,
-  },
+
   {
     id: "bar-soap",
     title: "Bar Soap",
@@ -41,7 +30,7 @@ export const products: Product[] = [
       "Individually wrapped guest bar soap with a clean, gentle lather — a bathroom essential in every room.",
     price: 6,
     unit: "per bar",
-    moq: 100,
+    moq:  288,
     step: 50,
     image: productBarSoap,
   },
@@ -53,7 +42,7 @@ export const products: Product[] = [
       "Neatly sachet-packed shower caps that keep guest bathrooms tidy and thoughtfully stocked.",
     price: 4,
     unit: "per cap",
-    moq: 100,
+    moq: 250,
     step: 50,
     image: productShowerCap,
   },
@@ -63,9 +52,9 @@ export const products: Product[] = [
     range: "Naturals & Pure",
     description:
       "One bottle, two jobs — a mild cleanse and conditioning finish that suits every guest hair type.",
-    price: 26,
-    unit: "per 50ml",
-    moq: 100,
+    price: 10.50,
+    unit: "per 35ml",
+    moq: 250,
     step: 25,
     image: productShampooConditioner,
   },
@@ -75,9 +64,9 @@ export const products: Product[] = [
     range: "Naturals & Pure",
     description:
       "Paraben-free body wash formulated for sensitive skin, bulk packaged for effortless restocking.",
-    price: 28,
-    unit: "per 50ml",
-    moq: 100,
+    price: 10.50,
+    unit: "per 35ml",
+    moq: 250,
     step: 25,
     image: productBodyWash,
   },
@@ -87,9 +76,9 @@ export const products: Product[] = [
     range: "Naturals & Pure",
     description:
       "Light, fast-absorbing lotion that leaves guest skin soft without any greasy residue.",
-    price: 30,
-    unit: "per 50ml",
-    moq: 100,
+    price: 10.50,
+    unit: "per 35ml",
+    moq: 250,
     step: 25,
     image: productLotion,
   },

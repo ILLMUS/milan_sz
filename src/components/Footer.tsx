@@ -55,7 +55,7 @@ const Footer = () => {
               <img src={logoImg} alt="Milan Accommodation Amenities" className="h-14 w-14 object-contain filter drop-shadow-sm" />
               <div className="flex flex-col">
                 <span className="font-heading text-2xl font-black uppercase tracking-widest text-[#1A1A1A]">
-                  Milan
+                  Milan_SZ
                 </span>
                 <span className="text-[10px] uppercase tracking-widest font-bold text-amber-700/80 -mt-1">
                   Accommodation Amenities
