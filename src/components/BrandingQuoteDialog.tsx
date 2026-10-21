@@ -1,9 +1,8 @@
-import { useRef, useState } from "react";
-import { Check, Send, Upload, X, ImageIcon } from "lucide-react";
+import { useState } from "react";
+import { Check, Send, ImageIcon } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
-import LogoPrintCheck from "@/components/LogoPrintCheck";
 import {
   Dialog,
   DialogContent,
@@ -13,20 +12,113 @@ import {
 } from "@/components/ui/dialog";
 
 const brandingSchema = z.object({
-  propertyName: z.string().trim().min(2, "Property name must be at least 2 characters").max(150, "Property name is too long"),
-  contactName: z.string().trim().min(2, "Name must be at least 2 characters").max(100, "Name is too long"),
-  email: z.string().trim().email("Invalid email address").max(255, "Email is too long"),
-  phone: z.string().trim().min(7, "Phone number is too short").max(20, "Phone number is too long").regex(/^[+\d\s()-]+$/, "Invalid phone number format"),
-  quantities: z.string().trim().min(3, "Tell us which products and how many you need").max(500, "Too long"),
-  notes: z.string().max(1000, "Too long").optional().default(""),
+  propertyName: z
+    .string()
+    .trim()
+    .min(2, "Property name must be at least 2 characters")
+    .max(150, "Property name is too long"),
+
+  contactName: z
+    .string()
+    .trim()
+    .min(2, "Name must be at least 2 characters")
+    .max(100, "Name is too long"),
+
+  email: z
+    .string()
+    .trim()
+    .email("Invalid email address")
+    .max(255, "Email is too long"),
+
+  phone: z
+    .string()
+    .trim()
+    .min(7, "Phone number is too short")
+    .max(20, "Phone number is too long")
+    .regex(/^[+\d\s()-]+$/, "Invalid phone number format"),
+
+  quantities: z
+    .string()
+    .trim()
+    .min(3, "Tell us which products and how many you need")
+    .max(500, "Too long"),
+
+  notes: z
+    .string()
+    .max(1000, "Too long")
+    .optional()
+    .default(""),
 });
 
 type BrandingForm = z.infer<typeof brandingSchema>;
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/webp", "image/svg+xml", "application/pdf"];
 const WHATSAPP_NUMBER = "26876259378";
 
+/**
+ * Build a professionally formatted WhatsApp quotation request.
+ *
+ * The logo is intentionally NOT included in the WhatsApp message.
+ * The customer is instructed to send/upload the logo separately
+ * after submitting the WhatsApp message.
+ */
+const buildWhatsappMessage = (d: BrandingForm) => {
+  const ref = `BQ-${Date.now().toString().slice(-6)}`;
+  const date = new Date().toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+
+  // Keep customer-entered quantities readable without inventing prices.
+  const cleanText = (value: string) =>
+    value
+      .replace(/\r\n/g, "\n")
+      .replace(/[ \t]+\n/g, "\n")
+      .trim();
+
+  const quantities = cleanText(d.quantities);
+  const notes = cleanText(d.notes ?? "");
+
+  const line = "━━━━━━━━━━━━━━━━━━━━";
+
+  return [
+    "*MILAN_SZ | BRANDING QUOTATION REQUEST*",
+    line,
+    `*Request Reference:* ${ref}`,
+    `*Date:* ${date}`,
+    line,
+    "",
+    "*CLIENT DETAILS*",
+    `• *Property:* ${cleanText(d.propertyName)}`,
+    `• *Contact person:* ${cleanText(d.contactName)}`,
+    `• *Phone:* ${cleanText(d.phone)}`,
+    `• *Email:* ${cleanText(d.email)}`,
+    "",
+    "*PRODUCTS & QUANTITIES REQUESTED*",
+    quantities,
+    "",
+    "*ADDITIONAL REQUIREMENTS*",
+    notes || "No additional requirements provided.",
+    "",
+    line,
+    "*QUOTATION REQUEST*",
+    "Please review the requested products and quantities and send me a formal quotation showing:",
+    "• Unit prices and applicable bulk-pricing tiers",
+    "• Any branding or setup charges",
+    "• The total estimated order cost",
+    "• Available product and packaging options",
+    "• Production and delivery lead time",
+    "",
+    "I understand that final pricing and the production schedule will be confirmed by your team.",
+    "",
+    "*LOGO IMAGE - NEXT STEP*",
+    "I will attach and send my property's logo image separately in this same WhatsApp chat, right after this message.",
+    "",
+    line,
+    "Thank you. I look forward to your response.",
+    "_Milan_sz_",
+  ].join("\n");
+};
 interface Props {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -34,13 +126,19 @@ interface Props {
 
 const BrandingQuoteDialog = ({ open, onOpenChange }: Props) => {
   const { toast } = useToast();
-  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [loading, setLoading] = useState(false);
-  const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [fileError, setFileError] = useState("");
-  const [errors, setErrors] = useState<Partial<Record<keyof BrandingForm, string>>>({});
+
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof BrandingForm, string>>
+  >({});
+
   const [honeypot, setHoneypot] = useState("");
-  const [submittedWhatsapp, setSubmittedWhatsapp] = useState<string | null>(null);
+
+  const [submittedWhatsapp, setSubmittedWhatsapp] = useState<string | null>(
+    null
+  );
+
   const [form, setForm] = useState<BrandingForm>({
     propertyName: "",
     contactName: "",
@@ -50,54 +148,53 @@ const BrandingQuoteDialog = ({ open, onOpenChange }: Props) => {
     notes: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-    if (errors[name as keyof BrandingForm]) {
-      setErrors((prev) => ({ ...prev, [name]: undefined }));
-    }
-  };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0] ?? null;
-    setFileError("");
-    if (!file) {
-      setLogoFile(null);
-      return;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    if (errors[name as keyof BrandingForm]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: undefined,
+      }));
     }
-    if (!ALLOWED_TYPES.includes(file.type)) {
-      setFileError("Please upload a PNG, JPG, WebP, SVG or PDF file.");
-      e.target.value = "";
-      return;
-    }
-    if (file.size > MAX_FILE_SIZE) {
-      setFileError("File must be smaller than 10MB.");
-      e.target.value = "";
-      return;
-    }
-    setLogoFile(file);
   };
 
   const reset = () => {
-    setForm({ propertyName: "", contactName: "", email: "", phone: "", quantities: "", notes: "" });
-    setLogoFile(null);
+    setForm({
+      propertyName: "",
+      contactName: "",
+      email: "",
+      phone: "",
+      quantities: "",
+      notes: "",
+    });
+
     setErrors({});
-    setFileError("");
     setSubmittedWhatsapp(null);
-    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
     if (honeypot) return;
 
     const result = brandingSchema.safeParse(form);
+
     if (!result.success) {
       const fieldErrors: Partial<Record<keyof BrandingForm, string>> = {};
-      result.error.errors.forEach((err) => {
-        const field = err.path[0] as keyof BrandingForm;
-        if (!fieldErrors[field]) fieldErrors[field] = err.message;
+
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] as keyof BrandingForm;
+        if (!fieldErrors[field]) fieldErrors[field] = issue.message;
       });
+
       setErrors(fieldErrors);
       return;
     }
@@ -105,108 +202,175 @@ const BrandingQuoteDialog = ({ open, onOpenChange }: Props) => {
     setLoading(true);
     setErrors({});
 
+    // Prepare WhatsApp first so an online-save failure does not trap the customer.
+    const waMessage = buildWhatsappMessage(result.data);
+    setSubmittedWhatsapp(waMessage);
+
     try {
-      let logoPath = "";
-      if (logoFile) {
-        const ext = logoFile.name.split(".").pop()?.toLowerCase() || "png";
-        const safeName = form.propertyName.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 40);
-        logoPath = `${Date.now()}-${safeName}.${ext}`;
-        const { error: uploadError } = await supabase.storage
-          .from("branding-logos")
-          .upload(logoPath, logoFile, { contentType: logoFile.type });
-        if (uploadError) throw new Error("Logo upload failed. Please try again.");
+      const { data, error: fnError } = await supabase.functions.invoke(
+        "submit-quote",
+        {
+          body: {
+            fullName: result.data.contactName,
+            businessName: result.data.propertyName,
+            phone: result.data.phone,
+            email: result.data.email,
+            establishmentType: "Custom Branding Request",
+            productsInterested: "Custom-branded amenities (logo printing)",
+            estimatedQuantity: result.data.quantities,
+            message: [
+              "Branding quotation request",
+              `Property: ${result.data.propertyName}`,
+              `Contact: ${result.data.contactName}`,
+              `Phone: ${result.data.phone}`,
+              `Email: ${result.data.email}`,
+              `Products and quantities: ${result.data.quantities}`,
+              result.data.notes
+                ? `Additional requirements: ${result.data.notes}`
+                : "",
+              "Logo image will be sent separately through WhatsApp by the customer.",
+            ]
+              .filter(Boolean)
+              .join("\n\n"),
+            requestType: "branding-quote",
+            // Kept empty for compatibility with older function versions.
+            logoPath: "",
+          },
+        }
+      );
+
+      if (fnError) {
+        // Silent for the customer: WhatsApp is the main channel. Log for the site owner.
+        let detail = fnError.message || "The quote endpoint returned an error.";
+        try {
+          const context = (fnError as { context?: Response }).context;
+          if (context && typeof context.clone === "function") {
+            const responseText = await context.clone().text();
+            if (responseText) detail = responseText;
+          }
+        } catch {
+          // keep original message
+        }
+        console.error("submit-quote function failed:", detail, fnError, data);
       }
 
-      const { error: fnError } = await supabase.functions.invoke("submit-quote", {
-        body: {
-          fullName: result.data.contactName,
-          businessName: result.data.propertyName,
-          phone: result.data.phone,
-          email: result.data.email,
-          establishmentType: "Custom Branding Request",
-          productsInterested: "Custom-branded amenities (logo printing)",
-          estimatedQuantity: result.data.quantities,
-          message: [
-            result.data.notes,
-            logoPath ? `Logo artwork uploaded: ${logoPath}` : "No logo artwork attached yet.",
-          ].filter(Boolean).join("\n\n"),
-          requestType: "branding-quote",
-          logoPath,
-        },
-      });
-
-      if (fnError) throw new Error("Submission failed");
-
-      // Build the WhatsApp message the buyer can send to Milan's number
-      const waMessage = [
-        "*Custom Branding Quote Request — Milan_sz*",
-        "",
-        `Property: ${result.data.propertyName}`,
-        `Contact: ${result.data.contactName}`,
-        `Phone: ${result.data.phone}`,
-        `Email: ${result.data.email}`,
-        "",
-        `Products & quantities: ${result.data.quantities}`,
-        "",
-        `Notes: ${result.data.notes || "—"}`,
-        "",
-        logoFile
-          ? `Logo artwork: "${logoFile.name}" was uploaded through the website (secured on our side — we'll collect it and reply with pricing).`
-          : "Logo artwork: not attached yet.",
-      ].join("\n");
-      setSubmittedWhatsapp(waMessage);
-
       toast({
-        title: "Branding Quote Requested!",
-        description: "We've received your artwork and details — expect a reply within 24 hours.",
+        title: "Quote request ready",
+        description:
+          "Tap “Send via WhatsApp” to complete it, then attach your logo image in the same chat.",
       });
     } catch (err) {
-      toast({
-        title: "Something went wrong",
-        description: err instanceof Error ? err.message : "Please try again or reach us on WhatsApp.",
-        variant: "destructive",
-      });
+      // Silent for the customer: WhatsApp is the main channel.
+      console.error("Unexpected submit-quote error:", err);
     } finally {
       setLoading(false);
     }
   };
 
+  /**
+   * Open WhatsApp with the formatted message.
+   */
+  const handleSendWhatsApp = () => {
+    if (!submittedWhatsapp) {
+      toast({
+        title: "WhatsApp message is not ready",
+        description: "Please complete the quote form again before opening WhatsApp.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(submittedWhatsapp)}`;
+
+    // Navigate directly from the button click. This avoids popup blockers
+    // that can prevent window.open() from launching WhatsApp.
+    window.location.assign(whatsappUrl);
+  };
+
   const inputClass =
     "w-full rounded-sm border border-border bg-background px-4 py-3 font-body text-sm text-foreground placeholder:text-muted-foreground focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold transition-colors";
-  const errorClass = "text-xs text-destructive mt-1 font-body";
+
+  const errorClass =
+    "text-xs text-destructive mt-1 font-body";
 
   return (
-    <Dialog open={open} onOpenChange={(o) => { if (!o) reset(); onOpenChange(o); }}>
+    <Dialog
+      open={open}
+      onOpenChange={(o) => {
+        if (!o) {
+          reset();
+        }
+
+        onOpenChange(o);
+      }}
+    >
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="font-heading text-2xl">Request a Branding Quote</DialogTitle>
+          <DialogTitle className="font-heading text-2xl">
+            Request a Branding Quote
+          </DialogTitle>
+
           <DialogDescription className="font-body text-sm">
-            Share your property details, the quantities you need and your logo artwork — we'll
-            come back within 24 hours with pricing.
+            Enter your property and order details. After sending the quotation message through WhatsApp, attach your property's logo image separately in the same chat.
           </DialogDescription>
         </DialogHeader>
 
         {submittedWhatsapp ? (
           <div className="space-y-6 py-4 text-center">
+
+            {/* Success icon */}
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-gold/10">
-              <Check size={24} className="text-gold" />
+              <Check
+                size={24}
+                className="text-gold"
+              />
             </div>
+
+            {/* Success message */}
             <div className="space-y-2">
-              <h3 className="font-heading text-xl">Request received!</h3>
+              <h3 className="font-heading text-xl">
+                Your quote is ready to send!
+              </h3>
+
               <p className="font-body text-sm text-muted-foreground">
-                We've saved your details{logoFile ? " and artwork" : ""}. For the fastest
-                reply, send the same request straight to our WhatsApp:
+                Your quotation request is ready. Tap the button below to send it to us on WhatsApp, then attach your logo image in the same chat. We reply within 24 hours.
               </p>
             </div>
-            <a
-              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(submittedWhatsapp)}`}
-              target="_blank"
-              rel="noopener noreferrer"
+
+            {/* WhatsApp button */}
+            <button
+              type="button"
+              onClick={handleSendWhatsApp}
               className="flex w-full items-center justify-center gap-2 bg-primary py-3.5 font-body text-xs font-medium uppercase tracking-luxury text-primary-foreground transition-opacity hover:opacity-90"
             >
               <Send size={16} />
+
               Send via WhatsApp
-            </a>
+            </button>
+
+            {/* Logo instruction */}
+            <div className="border border-border bg-background p-4 text-left">
+              <div className="mb-2 flex items-center gap-2">
+                <ImageIcon
+                  size={18}
+                  className="text-gold"
+                />
+
+                <span className="font-body text-sm font-semibold">
+                  Important: Send Your Logo
+                </span>
+              </div>
+
+              <p className="font-body text-xs leading-5 text-muted-foreground">
+                After WhatsApp opens, send the pre-filled quotation message first. Then use WhatsApp's attachment button to select and send your property's logo image in the same chat. The logo is not uploaded through this website form.
+              </p>
+
+              <p className="mt-2 font-body text-xs leading-5 text-muted-foreground">
+                Preferred formats: PNG, JPG, SVG or PDF.
+              </p>
+            </div>
+
+            {/* Done */}
             <button
               type="button"
               onClick={() => {
@@ -219,114 +383,160 @@ const BrandingQuoteDialog = ({ open, onOpenChange }: Props) => {
             </button>
           </div>
         ) : (
-        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
-          {/* Honeypot */}
-          <div className="absolute h-0 overflow-hidden opacity-0" aria-hidden="true">
-            <input
-              type="text"
-              name="bot-field"
-              tabIndex={-1}
-              autoComplete="off"
-              value={honeypot}
-              onChange={(e) => setHoneypot(e.target.value)}
-            />
-          </div>
-
-          <div>
-            <input name="propertyName" value={form.propertyName} onChange={handleChange} placeholder="Hotel / Guesthouse Name *" className={`${inputClass} ${errors.propertyName ? "border-destructive" : ""}`} />
-            {errors.propertyName && <p className={errorClass}>{errors.propertyName}</p>}
-          </div>
-
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <input name="contactName" value={form.contactName} onChange={handleChange} placeholder="Your Name *" className={`${inputClass} ${errors.contactName ? "border-destructive" : ""}`} />
-              {errors.contactName && <p className={errorClass}>{errors.contactName}</p>}
-            </div>
-            <div>
-              <input name="phone" type="tel" value={form.phone} onChange={handleChange} placeholder="Phone Number *" className={`${inputClass} ${errors.phone ? "border-destructive" : ""}`} />
-              {errors.phone && <p className={errorClass}>{errors.phone}</p>}
-            </div>
-          </div>
-
-          <div>
-            <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email Address *" className={`${inputClass} ${errors.email ? "border-destructive" : ""}`} />
-            {errors.email && <p className={errorClass}>{errors.email}</p>}
-          </div>
-
-          <div>
-            <textarea
-              name="quantities"
-              value={form.quantities}
-              onChange={handleChange}
-              placeholder="Products & quantities, e.g. 500 x 35ml Body Wash, 300 x Bar Soap *"
-              rows={3}
-              className={`${inputClass} resize-none ${errors.quantities ? "border-destructive" : ""}`}
-            />
-            {errors.quantities && <p className={errorClass}>{errors.quantities}</p>}
-          </div>
-
-          {/* Logo upload */}
-          <div>
-            <label className="mb-2 block font-body text-xs uppercase tracking-luxury text-muted-foreground">
-              Your Logo Artwork (optional)
-            </label>
-            {logoFile ? (
-              <div className="flex items-center justify-between border border-border bg-background px-4 py-3">
-                <div className="flex min-w-0 items-center gap-3">
-                  <ImageIcon size={18} className="shrink-0 text-gold" />
-                  <span className="truncate font-body text-sm text-foreground">{logoFile.name}</span>
-                  <span className="shrink-0 font-body text-xs text-muted-foreground">
-                    {(logoFile.size / 1024 / 1024).toFixed(1)}MB
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => { setLogoFile(null); if (fileInputRef.current) fileInputRef.current.value = ""; }}
-                  className="ml-3 shrink-0 text-muted-foreground transition-colors hover:text-foreground"
-                  aria-label="Remove file"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-            ) : (
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                className="flex w-full items-center justify-center gap-2 border border-dashed border-border bg-background px-4 py-6 font-body text-sm text-muted-foreground transition-colors hover:border-gold hover:text-foreground"
-              >
-                <Upload size={16} />
-                Upload logo — PNG, JPG, WebP, SVG or PDF (max 10MB)
-              </button>
-            )}
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".png,.jpg,.jpeg,.webp,.svg,.pdf"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-            {fileError && <p className={errorClass}>{fileError}</p>}
-            {logoFile && <LogoPrintCheck file={logoFile} />}
-          </div>
-
-          <textarea
-            name="notes"
-            value={form.notes}
-            onChange={handleChange}
-            placeholder="Anything else — colours, tube style (white or transparent), deadlines…"
-            rows={3}
-            className={`${inputClass} resize-none`}
-          />
-
-          <button
-            type="submit"
-            disabled={loading}
-            className="gradient-gold flex w-full items-center justify-center gap-2 rounded-sm py-4 font-body text-sm font-semibold uppercase tracking-widest text-accent-foreground transition-all hover:shadow-gold disabled:opacity-50"
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-4"
+            noValidate
           >
-            <Send size={16} />
-            {loading ? "Sending..." : "Send Branding Quote Request"}
-          </button>
-        </form>
+            {/* Honeypot */}
+            <div
+              className="absolute h-0 overflow-hidden opacity-0"
+              aria-hidden="true"
+            >
+              <input
+                type="text"
+                name="bot-field"
+                tabIndex={-1}
+                autoComplete="off"
+                value={honeypot}
+                onChange={(e) =>
+                  setHoneypot(e.target.value)
+                }
+              />
+            </div>
+
+            {/* Property name */}
+            <div>
+              <input
+                name="propertyName"
+                value={form.propertyName}
+                onChange={handleChange}
+                placeholder="Hotel / Guesthouse Name *"
+                className={`${inputClass} ${
+                  errors.propertyName
+                    ? "border-destructive"
+                    : ""
+                }`}
+              />
+
+              {errors.propertyName && (
+                <p className={errorClass}>
+                  {errors.propertyName}
+                </p>
+              )}
+            </div>
+
+            {/* Name + phone */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <input
+                  name="contactName"
+                  value={form.contactName}
+                  onChange={handleChange}
+                  placeholder="Your Name *"
+                  className={`${inputClass} ${
+                    errors.contactName
+                      ? "border-destructive"
+                      : ""
+                  }`}
+                />
+
+                {errors.contactName && (
+                  <p className={errorClass}>
+                    {errors.contactName}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <input
+                  name="phone"
+                  type="tel"
+                  value={form.phone}
+                  onChange={handleChange}
+                  placeholder="Phone Number *"
+                  className={`${inputClass} ${
+                    errors.phone
+                      ? "border-destructive"
+                      : ""
+                  }`}
+                />
+
+                {errors.phone && (
+                  <p className={errorClass}>
+                    {errors.phone}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Email */}
+            <div>
+              <input
+                name="email"
+                type="email"
+                value={form.email}
+                onChange={handleChange}
+                placeholder="Email Address *"
+                className={`${inputClass} ${
+                  errors.email
+                    ? "border-destructive"
+                    : ""
+                }`}
+              />
+
+              {errors.email && (
+                <p className={errorClass}>
+                  {errors.email}
+                </p>
+              )}
+            </div>
+
+            {/* Products & quantities */}
+            <div>
+              <textarea
+                name="quantities"
+                value={form.quantities}
+                onChange={handleChange}
+                placeholder="Products & quantities, e.g. 500 x 35ml Body Wash, 300 x Bar Soap *"
+                rows={3}
+                className={`${inputClass} resize-none ${
+                  errors.quantities
+                    ? "border-destructive"
+                    : ""
+                }`}
+              />
+
+              {errors.quantities && (
+                <p className={errorClass}>
+                  {errors.quantities}
+                </p>
+              )}
+            </div>
+
+            {/* Additional notes */}
+            <textarea
+              name="notes"
+              value={form.notes}
+              onChange={handleChange}
+              placeholder="Anything else — colours, tube style (white or transparent), deadlines…"
+              rows={3}
+              className={`${inputClass} resize-none`}
+            />
+
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="gradient-gold flex w-full items-center justify-center gap-2 rounded-sm py-4 font-body text-sm font-semibold uppercase tracking-widest text-accent-foreground transition-all hover:shadow-gold disabled:opacity-50"
+            >
+              <Send size={16} />
+
+              {loading
+                ? "Sending..."
+                : "Prepare Branding Quote"}
+            </button>
+          </form>
         )}
       </DialogContent>
     </Dialog>
