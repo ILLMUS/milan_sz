@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { products, formatPrice, type Product } from "@/data/products";
 import { useCart } from "@/context/CartContext";
 import logo from "@/assets/milan-logo.png";
-import cover from "@/assets/product-amenities.jpg";
+import cover from "@/assets/product-amenities.png";
 
 const PRODUCTS_PER_PAGE = 6;
 
